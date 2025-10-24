@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="de" x-data="donationApp()" class="h-full bg-gray-50">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GarmentGo - Zielgenau helfen</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="icon" href="assets/garmentgo-favicon.png">
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200..700,0..1,-50..200" />
+  <link rel="stylesheet" href="/app.css">
+  <style>
+    /* Einfacher Parallax-Effekt über data-speed-Attribute */
+    [data-parallax-container] {
+      perspective: 1px; /* Erzeugt einen neuen Stacking-Kontext für flüssigere Transformationen */
+    }
+    [data-parallax] {
+      will-change: transform;
+      transition: transform 0.05s linear;
+    }
+    /* Scrollleisten in horizontalen Slidern ausblenden, Scrollen beibehalten */
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    /* Grundeinstellungen für Material Symbols */
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 300,
+        'GRAD' 0,
+        'opsz' 48;
+    }
+  </style>
+  <script src="/app.js"></script>
+</head>
+<body class="h-full">
+  <!-- App-Shell -->
+  <div class="min-h-full flex flex-col">
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Hauptinhalt -->
+    <main class="flex-1" id="start">
+      <!-- Hero / Einführung -->
+        <section class="relative overflow-hidden bg-gradient-to-b from-emerald-50 to-transparent bg-no-repeat min-h-[50vh] md:min-h-[60vh] flex items-center" data-parallax-container>
+         <!-- Parallax-Icon-Ebene -->
+          <div class="pointer-events-none absolute inset-0 text-gray-700">
+            <!-- Mobile Positionierung: volunteer_activism oben links, checkroom unten links, apparel unten mittig rechts -->
+            <span data-parallax data-speed="0.08" data-rot-speed="0.02" class="material-symbols-outlined absolute left-20 top-10 md:left-60 md:top-8 opacity-5 select-none text-6xl md:text-8xl">volunteer_activism</span>
+            <span data-parallax data-speed="0.06" data-rot-speed="-0.015" class="material-symbols-outlined absolute left-12 bottom-10 md:left-16 md:top-1/2 opacity-10 select-none text-8xl md:text-9xl">checkroom</span>
+            <!-- Rechte Seite (ein großes Icon) -->
+            <span data-parallax data-speed="-0.07" data-rot-speed="0.018" data-base-rot="10" class="material-symbols-outlined absolute right-4 top-1/2 md:right-60 md:bottom-40 opacity-5 select-none text-8xl md:text-9xl" style="transform: rotate(10deg);">apparel</span>
+          </div>
+         <div class="relative z-10 max-w-6xl mx-auto px-6 py-0">
+          <div class="grid gap-8 items-center justify-items-center text-center">
+            <div class="max-w-2xl">
+              <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-gray-900">Deine Spende. Dein Ziel.</h2>
+              <p class="mt-3 text-gray-700">Wähle selbst, in welches Krisengebiet deine Spende gehen soll. Übergabe an unserer Geschäftsstelle oder Abholung per Sammelfahrzeug.</p>
+              <div class="mt-6 no-print">
+                <a href="spende.html" class="inline-flex items-center px-5 py-3 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400">Jetzt spenden →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- So funktioniert es (3 Schritte) -->
+      <section class="max-w-6xl mx-auto px-4 pt-2 pb-12">
+        <h3 class="text-center text-xl font-semibold text-gray-900">So einfach funktioniert's:</h3>
+        <div class="mt-6 grid gap-4 sm:grid-cols-3">
+          <div class="p-5 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 text-center">
+            <span class="material-symbols-outlined text-emerald-600" style="font-size:60px;">contract_edit</span>
+            <div class="mt-1 font-medium">1. Registrieren</div>
+            <div class="mt-2 text-sm text-gray-500">Formular ausfüllen & Zielgebiet wählen</div>
+          </div>
+          <div class="p-5 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 text-center">
+            <span class="material-symbols-outlined text-emerald-600" style="font-size:60px;">hand_package</span>
+            <div class="mt-1 font-medium">2. Übergabe wählen</div>
+            <div class="mt-2 text-sm text-gray-500">Abgabe an der Geschäftsstelle oder Abholung</div>
+                      </div>
+          <div class="p-5 bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 text-center">
+            <span class="material-symbols-outlined text-emerald-600" style="font-size:60px;">delivery_truck_speed</span>    
+            <div class="mt-1 font-medium">3. Lieferung</div>
+            <div class="mt-2 text-sm text-gray-500">Wir bringen die Spende ins gewählte Krisengebiet</div>
+                      </div>
+                    </div>
+      </section>
+
+      <!-- Über uns -->
+      <section class="max-w-6xl mx-auto px-8 md:px-4 pt-0 pb-12 md:py-12">
+        <div class="grid md:grid-cols-2 gap-8 items-center">
+              <div>
+            <h3 class="text-xl font-semibold text-gray-900">Menschen. Mission. Miteinander.</h3>
+            <p class="mt-4 text-gray-700 leading-relaxed">
+              GarmentGo e.V. entstand aus einer einfachen Idee: <b>gut erhaltene Kleidung dorthin zu bringen, 
+              wo sie am dringendsten gebraucht wird</b>. 2020 lokal gestartet, sind wir heute überregional vernetzt 
+              und koordinieren mit Partnern bedarfsorientierte Lieferungen in Krisenregionen 
+              sowie Hilfen für soziale Einrichtungen.
+            </p>
+            <p class="mt-3 text-gray-700 leading-relaxed">
+              Unser Ansatz ist pragmatisch: <b>transparente Prozesse, kurze Wege, klare Kommunikation</b>. 
+              Spender:innen wählen das Krisengebiet – wir übernehmen Sortierung, Bündelung und Transport. 
+              So erzielt jede Spende maximale Wirkung.
+            </p>
+            <div class="mt-6">
+              <a href="spende.html" class="inline-flex w-full justify-center items-center px-5 py-3 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400">Jetzt Spende registrieren →</a>
+                </div>
+              </div>
+          <div class="hidden md:block">
+            <img src="assets/volunteer.webp" alt="Team bei der Kleiderspende" class="rounded-2xl shadow-lg w-full h-100 object-cover">
+                </div>
+                
+      </section>
+
+      <!-- Banner mit Counter -->
+      <section class="w-full bg-emerald-600/5 border-y border-emerald-100">
+        <div class="max-w-6xl mx-auto px-4 py-10">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+              <div>
+              <div class="text-3xl md:text-4xl font-bold text-emerald-700" 
+              data-counter data-target="3107">0</div>
+              <div class="mt-1 text-sm text-gray-700">erfolgreiche Lieferungen</div>
+              </div>
+            <div>
+              <div class="text-3xl md:text-4xl font-bold text-emerald-700" 
+              data-counter data-target="27">0</div>
+              <div class="mt-1 text-sm text-gray-700">versorgte Krisengebiete</div>
+                  </div>
+            <div>
+              <div class="text-3xl md:text-4xl font-bold text-emerald-700" 
+              data-counter data-target="21000" data-format="plus">0</div>
+              <div class="mt-1 text-sm text-gray-700">Spenden</div>
+                  </div>
+                  </div>
+                </div>
+      </section>
+
+      <!-- FAQ-Section -->
+      <section class="px-6 max-w-4xl mx-auto px-4 py-12">
+        <h3 class="text-xl font-semibold text-gray-900 mb-8">Häufig gestellte Fragen</h3>
+        <div class="space-y-4">
+          <!-- FAQ 1 -->
+          <div class="bg-white rounded-xl shadow-sm ring-1 ring-gray-200 overflow-hidden">
+            <button @click="faq1 = !faq1" class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50">
+              <span class="font-medium text-gray-900">Welche Kleidung wird angenommen (Zustand, Größen, Saison)?</span>
+              <span class="material-symbols-outlined text-gray-500 transition-transform duration-200" :class="faq1 ? 'rotate-180' : ''">expand_more</span>
+            </button>
+              <div x-show="faq1" x-transition class="px-6 pb-4">
+                <p class="text-gray-700 text-sm">Wir nehmen saubere, gut erhaltene Kleidung für Kinder und Erwachsene (alle Größen) 
+                  an – inklusive Schuhe (paarweise gebunden), Jacken, Hosen, Pullover, Accessoires und Bettwäsche. 
+                  Bitte keine stark beschädigten, verschmutzten oder feuchten Textilien, keine Unterwäsche/Socken ohne 
+                  Originalverpackung und keine Altkleider-Säcke mit Restmüll. Saisonware (z. B. Winterkleidung im Winter) hilft besonders.</p>
+              </div>
+          </div>
+
+          <!-- FAQ 2 -->
+          <div class="bg-white rounded-xl shadow-sm ring-1 ring-gray-200 overflow-hidden">
+            <button @click="faq2 = !faq2" class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50">
+              <span class="font-medium text-gray-900">Muss ich meine Spende verpacken oder sortieren?</span>
+              <span class="material-symbols-outlined text-gray-500 transition-transform duration-200" :class="faq2 ? 'rotate-180' : ''">expand_more</span>
+            </button>
+              <div x-show="faq2" x-transition class="px-6 pb-4">
+                <p class="text-gray-700 text-sm">Ja, bitte. In sauberen Beuteln oder Kartons verpacken und grob vorsortieren 
+                  (z. B. „Kinder 98–116", „Damen M–L"). Schuhe paarweise zusammenbinden, fragile Teile obenauf legen und nach 
+                  Möglichkeit die Verpackung beschriften. Kleiderbügel bitte nicht mitschicken.</p>
+              </div>
+            </div>
+
+          <!-- FAQ 3 -->
+          <div class="bg-white rounded-xl shadow-sm ring-1 ring-gray-200 overflow-hidden">
+            <button @click="faq4 = !faq4" class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50">
+              <span class="font-medium text-gray-900">Kostet die Abholung etwas?</span>
+              <span class="material-symbols-outlined text-gray-500 transition-transform duration-200" :class="faq4 ? 'rotate-180' : ''">expand_more</span>
+            </button>
+              <div x-show="faq4" x-transition class="px-6 pb-4">
+                <p class="text-gray-700 text-sm">Die Abholung im Einzugsgebiet ist für dich kostenlos. Eine freiwillige 
+                  Kostenbeteiligung/Spende für Fahrtkosten ist willkommen, aber nicht erforderlich.</p>
+              </div>
+              </div>
+
+          <!-- FAQ 4 -->
+          <div class="bg-white rounded-xl shadow-sm ring-1 ring-gray-200 overflow-hidden">
+            <button @click="faq5 = !faq5" class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50">
+              <span class="font-medium text-gray-900">Kann ich die Registrierung nachträglich ändern oder stornieren?</span>
+              <span class="material-symbols-outlined text-gray-500 transition-transform duration-200" :class="faq5 ? 'rotate-180' : ''">expand_more</span>
+            </button>
+              <div x-show="faq5" x-transition class="px-6 pb-4">
+                <p class="text-gray-700 text-sm">Ja. Antworte einfach auf die Bestätigungs-E-Mail oder melde dich mit 
+                  deiner Vorgangsnummer bei uns ([E-Mail/Telefon einfügen]). Änderungen und Stornierungen sind bis 
+                  spätestens zum Vortag der Abholung möglich; am Abholtag selbst versuchen wir es noch, können es aber nicht garantieren.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
+
+      <!-- Aktuelle Krisengebiete (Slider) -->
+      <section class="px-3 w-full bg-white">
+        <div class="max-w-6xl mx-auto px-4 pt-4 pb-12 md:py-12">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-semibold text-gray-900 sm:text-left w-full sm:w-auto">Aktuelle Krisengebiete</h3>
+            <div class="hidden sm:flex items-center gap-2">
+              <button type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-lg border text-gray-700 hover:bg-gray-50" data-crisis-prev>
+                <span class="material-symbols-outlined">chevron_left</span>
+              </button>
+              <button type="button" class="inline-flex items-center justify-center w-9 h-9 rounded-lg border text-gray-700 hover:bg-gray-50" data-crisis-next>
+                <span class="material-symbols-outlined">chevron_right</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="overflow-x-auto no-scrollbar pb-2 -mb-2 px-1 -mx-1 touch-pan-x" data-crisis-track>
+              <div class="flex gap-4 snap-x snap-mandatory">
+                <!-- Ukraine -->
+                <article class="min-w-[260px] sm:min-w-[280px] md:min-w-[300px] snap-start bg-white rounded-2xl shadow-sm ring-1 ring-gray-200">
+                  <img src="assets/ukraine.jpg" alt="Ukraine" class="w-full h-40 object-cover rounded-t-2xl">
+                  <div class="p-4">
+                    <div class="font-medium">Ukraine</div>
+                    <p class="mt-1 text-sm text-gray-600">Anhaltender Krieg belastet Zivilbevölkerung massiv. Hilfe fokussiert auf Versorgung & Schutz.</p>
+                  </div>
+                </article>
+                <!-- Gaza -->
+                <article class="min-w-[260px] sm:min-w-[280px] md:min-w-[300px] snap-start bg-white rounded-2xl shadow-sm ring-1 ring-gray-200">
+                  <img src="assets/gaza.jpg" alt="Gaza" class="w-full h-40 object-cover rounded-t-2xl">
+                  <div class="p-4">
+                    <div class="font-medium">Gaza</div>
+                    <p class="mt-1 text-sm text-gray-600">Andauernde Gewalt zerstört Infrastruktur. Dringend benötigt werden Kleidung, Hygiene & Wärme.</p>
+                  </div>
+                </article>
+                <!-- Syrien -->
+                <article class="min-w-[260px] sm:min-w-[280px] md:min-w-[300px] snap-start bg-white rounded-2xl shadow-sm ring-1 ring-gray-200">
+                  <img src="assets/syrien.jpg" alt="Syrien" class="w-full h-40 object-cover rounded-t-2xl">
+                  <div class="p-4">
+                    <div class="font-medium">Syrien</div>
+                    <p class="mt-1 text-sm text-gray-600">Konflikt und Erdbebenfolgen treffen Millionen. Bedarf an saisonaler Kleidung bleibt hoch.</p>
+                  </div>
+                </article>
+                <!-- Afghanistan -->
+                <article class="min-w-[260px] sm:min-w-[280px] md:min-w-[300px] snap-start bg-white rounded-2xl shadow-sm ring-1 ring-gray-200">
+                  <img src="assets/afghanistan.jpg" alt="Afghanistan" class="w-full h-40 object-cover rounded-t-2xl">
+                  <div class="p-4">
+                    <div class="font-medium">Afghanistan</div>
+                    <p class="mt-1 text-sm text-gray-600">Wirtschaftskrise und Naturkatastrophen verschärfen Not. Wir liefern bedarfsgerecht.</p>
+                  </div>
+                </article>
+                <!-- Sudan -->
+                <article class="min-w-[260px] sm:min-w-[280px] md:min-w-[300px] snap-start bg-white rounded-2xl shadow-sm ring-1 ring-gray-200">
+                  <img src="assets/sudan.jpg" alt="Sudan" class="w-full h-40 object-cover rounded-t-2xl">
+                  <div class="p-4">
+                    <div class="font-medium">Sudan</div>
+                    <p class="mt-1 text-sm text-gray-600">Bewaffnete Auseinandersetzungen treiben Menschen in die Flucht. Kleidung wird dringend benötigt.</p>
+                  </div>
+                </article>
+              </div>
+            </div>
+            <!-- Fade-out-Effekt -->
+            <div class="pointer-events-none absolute inset-y-0 left-0 -ml-2 w-8 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200" data-fade-left></div>
+            <div class="pointer-events-none absolute inset-y-0 right-0 -mr-2 w-8 bg-gradient-to-l from-white to-transparent opacity-0 transition-opacity duration-200" data-fade-right></div>
+          </div>
+        </div>
+      </section>
+
+      
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <!-- Alpine-Komponente -->
+  <script>
+    function donationApp() {
+      return {
+        // FAQ-Status
+        faq1: false,
+        faq2: false,
+        faq4: false,
+        faq5: false,
+      };
+    }
+    // Parallax-Handler
+    function applyParallax() {
+      const scrolled = window.scrollY || window.pageYOffset;
+      document.querySelectorAll('[data-parallax]').forEach((el) => {
+        const speed = parseFloat(el.getAttribute('data-speed') || '0.1');
+        const rotSpeed = parseFloat(el.getAttribute('data-rot-speed') || '0');
+        const baseRot = parseFloat(el.getAttribute('data-base-rot') || '0');
+        const translateY = scrolled * speed;
+        // Bestehende transform-Eigenschaften entfernen und dann translateY und kombinierte Rotation hinzufügen
+        const existingTransform = (el.style.transform || '')
+          .replace(/translateY\([^)]*\)/g, '')
+          .replace(/rotate\([^)]*\)/g, '')
+          .trim();
+        const dynamicRotation = rotSpeed !== 0 || baseRot !== 0
+          ? ` rotate(${(baseRot + scrolled * rotSpeed).toFixed(2)}deg)`
+          : '';
+        el.style.transform = `${existingTransform} translateY(${translateY}px)${dynamicRotation}`.trim();
+      });
+    }
+    // Beim Laden und Scrollen ausführen, damit Basisrotationen sofort angewendet werden
+    document.addEventListener('DOMContentLoaded', applyParallax, { once: true });
+    document.addEventListener('scroll', applyParallax, { passive: true });
+
+
+    // Zähler beim Sichtbarwerden
+    function setupCounters() {
+      const counters = Array.from(document.querySelectorAll('[data-counter]'));
+      if (counters.length === 0) return;
+
+      const formatValue = (value, el) => {
+        const isPlus = el.getAttribute('data-format') === 'plus';
+        const formatted = value.toLocaleString('de-DE');
+        return isPlus ? `${formatted}+` : formatted;
+      };
+
+      const animate = (el) => {
+        const target = parseInt(el.getAttribute('data-target') || '0', 10);
+        const duration = 1200; // ms
+        const start = performance.now();
+        const startVal = 0;
+        const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+        const step = (now) => {
+          const progress = Math.min(1, (now - start) / duration);
+          const eased = easeOutCubic(progress);
+          const current = Math.round(startVal + (target - startVal) * eased);
+          el.textContent = formatValue(current, el);
+          if (progress < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      };
+
+      const obs = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            animate(el);
+            observer.unobserve(el);
+          }
+        });
+      }, { threshold: 0.3 });
+
+      counters.forEach((el) => obs.observe(el));
+    }
+
+    document.addEventListener('DOMContentLoaded', setupCounters);
+
+    // Steuerung für Krisen-Slider
+    document.addEventListener('DOMContentLoaded', function() {
+      const track = document.querySelector('[data-crisis-track]');
+      if (!track) return;
+      const prevBtns = document.querySelectorAll('[data-crisis-prev]');
+      const nextBtns = document.querySelectorAll('[data-crisis-next]');
+      const cardWidth = () => track.querySelector('article')?.getBoundingClientRect().width || 300;
+      const scrollBy = () => cardWidth() + 16; // gap zwischen den Karten
+
+      prevBtns.forEach(btn => btn.addEventListener('click', () => {
+        track.scrollBy({ left: -scrollBy(), behavior: 'smooth' });
+      }));
+      nextBtns.forEach(btn => btn.addEventListener('click', () => {
+        track.scrollBy({ left: scrollBy(), behavior: 'smooth' });
+      }));
+
+      // Sichtbarkeit der Kantenverläufe
+      const fadeLeft = document.querySelector('[data-fade-left]');
+      const fadeRight = document.querySelector('[data-fade-right]');
+      const updateFades = () => {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        const atStart = track.scrollLeft <= 1;
+        const atEnd = track.scrollLeft >= maxScroll - 1;
+        if (fadeLeft) fadeLeft.style.opacity = atStart ? '0' : '1';
+        if (fadeRight) fadeRight.style.opacity = atEnd ? '0' : '1';
+      };
+      updateFades();
+      track.addEventListener('scroll', updateFades, { passive: true });
+      window.addEventListener('resize', updateFades);
+    });
+  </script>
+</body>
+</html>

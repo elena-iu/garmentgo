@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="de" class="h-full bg-gray-50">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bestätigung - GarmentGo</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="assets/garmentgo-favicon.png">
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200..700,0..1,-50..200" />
+  <link rel="stylesheet" href="/app.css">
+  <script src="/app.js"></script>
+  <style>
+    
+  </style>
+</head>
+<body class="h-full">
+  <!-- App-Shell -->
+  <div class="min-h-full flex flex-col">
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Hauptinhalt -->
+    <main class="flex-1">
+      <!-- Bestätigung -->
+      <section class="max-w-3xl mx-auto px-4 py-6">
+        <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 overflow-hidden">
+          <div class="px-6 py-5 border-b">
+            <div class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-emerald-600 text-3xl">task_alt</span>
+              <div>
+                <h3 class="text-xl font-semibold">Vielen Dank! Ihre Spende wurde registriert.</h3>
+                <p class="text-sm text-gray-600">Bestätigungs‑Code: <span class="font-mono" id="confirmation-code"></span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div class="mb-6">
+              <p class="text-gray-700 leading-relaxed">
+                Ihre Spende wurde erfolgreich registriert und wird von unserem Team bearbeitet. 
+                Mit Ihrem Bestätigungscode können Sie den Status Ihrer Spende jederzeit nachverfolgen.
+              </p>
+              <div class="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                <p class="text-sm text-emerald-800" id="next-steps-text"></p>
+              </div>
+            </div>
+            
+            <h4 class="text-lg font-semibold text-gray-900 mb-4">Spende-Details</h4>
+            <dl class="grid sm:grid-cols-2 gap-4">
+              <div class="p-4 border rounded-xl"><dt class="text-sm text-gray-500">Kleidung</dt><dd class="font-medium" id="confirmation-items"></dd></div>
+              <div class="p-4 border rounded-xl"><dt class="text-sm text-gray-500">Krisengebiet</dt><dd class="font-medium" id="confirmation-crisis"></dd></div>
+              <div class="p-4 border rounded-xl"><dt class="text-sm text-gray-500">Datum & Uhrzeit</dt><dd class="font-medium" id="confirmation-when"></dd></div>
+              <div class="p-4 border rounded-xl"><dt class="text-sm text-gray-500">Ort</dt><dd class="font-medium" id="confirmation-place"></dd></div>
+            </dl>
+            
+            <div class="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+              <h5 class="font-semibold text-gray-900 mb-2">Haben Sie Fragen?</h5>
+              <p class="text-sm text-gray-600">
+                Bei Fragen zu Ihrer Spende wenden Sie sich gerne an unser Team unter 
+                <a href="mailto:info@garmentgo.de" class="text-emerald-600 hover:text-emerald-700 underline">info@garmentgo.de</a> 
+                oder rufen Sie uns unter <a href="tel:+4930123456789" class="text-emerald-600 hover:text-emerald-700 underline">+49 30 123 456 789</a> an.
+              </p>
+            </div>
+            <div class="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 no-print">
+              <button id="print-button" class="px-4 py-2 rounded-lg border hover:bg-gray-50">Bestätigung drucken / speichern</button>
+              <a href="/spende.html" class="px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 inline-block text-center">Neue Spende registrieren</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <script>
+    // Bestätigungsdaten aus dem sessionStorage laden
+    function loadConfirmationData() {
+      try {
+        const storedData = sessionStorage.getItem('donationConfirmation');
+        
+        if (storedData) {
+          const data = JSON.parse(storedData);
+          
+          // Bestätigungselemente befüllen
+          document.getElementById('confirmation-code').textContent = data.id || '';
+          document.getElementById('confirmation-items').textContent = data.itemsLabel || '';
+          document.getElementById('confirmation-crisis').textContent = data.crisisLabel || '';
+          document.getElementById('confirmation-when').textContent = data.when || '';
+          document.getElementById('confirmation-place').textContent = data.place || '';
+          
+          // Dynamischen Hinweis zu nächsten Schritten je nach Übergabeart setzen
+          const nextStepsElement = document.getElementById('next-steps-text');
+          if (data.handoverType === 'OFFICE') {
+            nextStepsElement.innerHTML = '<strong>Nächste Schritte:</strong> Sie können Ihre Spende ab sofort bei unserer Geschäftsstelle abgeben. Öffnungszeiten: Montag bis Freitag, 11:00 - 19:00 Uhr.';
+          } else {
+            nextStepsElement.innerHTML = '<strong>Nächste Schritte:</strong> Unser Logistikteam wird sich innerhalb der nächsten 2-3 Werktage bei Ihnen melden, um die Details für die Abholung zu koordinieren.';
+          }
+          
+          // Gespeicherte Daten nach der Anzeige löschen
+          sessionStorage.removeItem('donationConfirmation');
+        } else {
+          // Umleitung zu spende.html, wenn keine Daten vorhanden sind
+          window.location.href = '/spende.html';
+        }
+      } catch (e) {
+        console.error('Error parsing confirmation data:', e);
+        // Umleitung zu spende.html, wenn Daten ungültig sind
+        window.location.href = '/spende.html';
+      }
+    }
+
+    // Druck-Button Funktionalität
+    function setupPrintButton() {
+      const printButton = document.getElementById('print-button');
+      if (printButton) {
+        printButton.addEventListener('click', function() {
+          window.print();
+        });
+      }
+    }
+
+    // Alles beim Seitenladen initialisieren
+    document.addEventListener('DOMContentLoaded', function() {
+      loadConfirmationData();
+      setupPrintButton();
+    });
+  </script>
+</body>
+</html>

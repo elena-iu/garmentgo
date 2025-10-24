@@ -1,0 +1,124 @@
+<!-- Header -->
+<header id="site-header" class="fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur border-b transition-transform duration-200 transform">
+  <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <a href="/index.html" class="block">
+        <img src="/assets/garmentgo-logo.png" alt="GarmentGo Logo" class="h-10 w-10 rounded-xl object-cover" />
+      </a>
+      <div>
+         <h1 class="text-xl md:text-lg font-semibold">GarmentGo e.V.</h1>
+        <p class="hidden md:block text-xs text-gray-500">Portal zur Kleiderspenden-Registrierung</p>
+      </div>
+    </div>
+            <nav class="hidden md:flex items-center gap-6 text-sm text-gray-700 no-print">
+                <a href="/faq.html" class="hover:text-emerald-700">FAQ</a>
+                <a href="/about.html" class="hover:text-emerald-700">Über uns</a>
+                <a href="/tracking.html" class="hover:text-emerald-700">Spende verfolgen</a>
+              <a href="/spende.html" id="donate-button" class="inline-flex items-center px-5 py-3 rounded-xl bg-emerald-600 text-white font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400">Kleider spenden</a>
+            </nav>
+    <button id="mobile-menu-toggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 
+    rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menü öffnen">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+        <path d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+</header>
+<div id="header-spacer"></div>
+<!-- Mobile-Menü (zusammenklappbare Überlagerung) -->
+<nav id="mobile-menu" class="md:hidden hidden fixed inset-x-0 z-40 bg-white border-b shadow-lg">
+  <div class="max-w-6xl mx-auto px-4 py-4 grid gap-3 text-sm text-gray-700">
+    <a href="/faq.html" class="block px-2 py-2 rounded-lg hover:bg-gray-50">FAQ</a>
+    <a href="/about.html" class="block px-2 py-2 rounded-lg hover:bg-gray-50">Über uns</a>
+    <a href="/tracking.html" class="block px-2 py-2 rounded-lg hover:bg-gray-50">Spende verfolgen</a>
+    <a href="/spende.html" id="mobile-donate-button" class="block px-2 py-2 rounded-lg bg-emerald-600 text-white text-center hover:bg-emerald-700">Kleider spenden</a>
+  </div>
+</nav>
+<script>
+  (function(){
+    // Kleiderspenden-Button auf Spendenseite ausblenden
+    function hideDonateButtonOnSpendePage() {
+      var currentPath = window.location.pathname;
+      var isSpendePage = currentPath.includes('spende.html');
+      
+      if (isSpendePage) {
+        var donateButton = document.getElementById('donate-button');
+        var mobileDonateButton = document.getElementById('mobile-donate-button');
+        
+        if (donateButton) {
+          donateButton.style.display = 'none';
+        }
+        if (mobileDonateButton) {
+          mobileDonateButton.style.display = 'none';
+        }
+      }
+    }
+
+    function setHeaderSpacer(){
+      var h = document.getElementById('site-header');
+      var s = document.getElementById('header-spacer');
+      var m = document.getElementById('mobile-menu');
+      if (!h || !s) return;
+      s.style.height = h.offsetHeight + 'px';
+      if (m) m.style.top = h.offsetHeight + 'px';
+    }
+    setHeaderSpacer();
+    hideDonateButtonOnSpendePage();
+    window.addEventListener('resize', setHeaderSpacer);
+    window.addEventListener('load', setHeaderSpacer);
+    try {
+      if (window.ResizeObserver) {
+        var ro = new ResizeObserver(setHeaderSpacer);
+        var _h = document.getElementById('site-header');
+        if (_h) ro.observe(_h);
+      }
+    } catch (e) {}
+
+    // Beim Scrollen nach unten ausblenden, beim Scrollen nach oben anzeigen
+    var lastY = window.scrollY || 0;
+    var header = document.getElementById('site-header');
+      var delta = 5; // kleiner Schwellenwert, um Ruckeln zu vermeiden
+    function onScroll(){
+      if (!header) return;
+      var y = window.scrollY || 0;
+      if (y <= 0) {
+        // Oben: immer anzeigen
+        header.classList.remove('-translate-y-full');
+      } else if (y > lastY + delta) {
+        // Nach unten scrollen: ausblenden
+        header.classList.add('-translate-y-full');
+      } else if (y < lastY - delta) {
+        // Nach oben scrollen: anzeigen
+        header.classList.remove('-translate-y-full');
+      }
+      lastY = y;
+    }
+    document.addEventListener('scroll', onScroll, { passive: true });
+
+    // Mobile-Menü umschalten
+    var toggle = document.getElementById('mobile-menu-toggle');
+    var menu = document.getElementById('mobile-menu');
+    function closeMenu(){
+      if (!menu) return;
+      menu.classList.add('hidden');
+      if (toggle) toggle.setAttribute('aria-expanded','false');
+    }
+    function openMenu(){
+      if (!menu) return;
+      menu.classList.remove('hidden');
+      if (toggle) toggle.setAttribute('aria-expanded','true');
+    }
+    if (toggle && menu) {
+      toggle.addEventListener('click', function(){
+        var isOpen = !menu.classList.contains('hidden');
+        if (isOpen) closeMenu(); else openMenu();
+      });
+      // Bei Navigation schließen
+      menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+      // Schließen beim Vergrößern auf Desktop
+      window.addEventListener('resize', function(){ if (window.innerWidth >= 768) closeMenu(); });
+    }
+  })();
+</script>
+
+

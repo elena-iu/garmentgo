@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="de" x-data="donationApp()" class="h-full bg-gray-50">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Spende registrieren - GarmentGo</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link rel="icon" href="assets/garmentgo-favicon.png">
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,200..700,0..1,-50..200" />
+  <link rel="stylesheet" href="/app.css">
+  <style>
+    /* Vollbild-Ladeanzeige */
+    #page-loader { position: fixed; inset: 0; z-index: 60; background: #ffffff; display: flex; align-items: center; justify-content: center; transition: opacity .35s ease; }
+    #page-loader.hidden { opacity: 0; pointer-events: none; }
+    .loader-heart { width: 64px; height: 64px; color: #059669; }
+    .loader-heart path { fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 240; stroke-dashoffset: 240; animation: draw 2.0s ease-in-out infinite; }
+    @keyframes draw { 0% { stroke-dashoffset: 240; } 60% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 240; } }
+  </style>
+  <script src="/app.js"></script>
+</head>
+<body class="h-full">
+  <!-- App-Shell -->
+  <div class="min-h-full flex flex-col">
+    <!-- Seiten-Ladeoverlay (nur auf dieser Seite) -->
+    <div id="page-loader" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="loader-heart" aria-label="Laden">
+        <!-- Outline heart path; animated via stroke dash -->
+        <path d="M12 21s-4.35-2.58-6.9-5.12C3.1 13.88 2 12.26 2 10.25 2 7.9 3.9 6 6.25 6c1.47 0 2.79.73 3.6 1.86L12 9.9l2.15-2.04C15 6.73 16.28 6 17.75 6 20.1 6 22 7.9 22 10.25c0 2.01-1.1 3.63-3.1 5.63C16.35 18.42 12 21 12 21z"/>
+      </svg>
+    </div>
+    <!-- Header -->
+    <div id="header-placeholder"></div>
+
+    <!-- Hauptinhalt -->
+    <main class="flex-1">
+      <!-- Mehrstufiges Formular -->
+      <section class="max-w-3xl mx-auto px-4 py-10">
+        <div class="bg-white rounded-2xl shadow-sm ring-1 ring-gray-200 overflow-hidden">
+          <div class="px-6 py-5 border-b">
+            <div>
+              <h3 class="text-xl font-semibold">Spende registrieren</h3>
+              <p class="text-sm text-gray-600">Schritt <span x-text="step"></span> von 6</p>
+            </div>
+          </div>
+
+          <div class="p-6">
+            <div>
+            <!-- Schritt 1: Übergabeart -->
+            <template x-if="step===1">
+              <div>
+                <div class="text-sm font-medium text-gray-900">Übergabeart <span class="text-rose-600">*</span></div>
+                <div class="mt-3 grid sm:grid-cols-2 gap-3">
+                  <label class="relative block p-4 border rounded-xl cursor-pointer hover:bg-gray-50" :class="handoverType==='OFFICE' ? 'border-emerald-500 ring-1 ring-emerald-200 bg-emerald-50/30' : 'border-gray-300'">
+                    <input type="radio" class="sr-only" name="handover" value="OFFICE" x-model="handoverType">
+                    <div class="flex items-start gap-3">
+                      <span class="material-symbols-outlined text-emerald-600 text-3xl">home</span>
+                      <div>
+                        <div class="font-semibold">Übergabe an der Geschäftsstelle</div>
+                        <div class="text-sm text-gray-600">GarmentGo e.V., Musterstraße 1, 10117 Berlin</div>
+                      </div>
+                    </div>
+                  </label>
+                  <label class="relative block p-4 border rounded-xl cursor-pointer hover:bg-gray-50" :class="handoverType==='PICKUP' ? 'border-emerald-500 ring-1 ring-emerald-200 bg-emerald-50/30' : 'border-gray-300'">
+                    <input type="radio" class="sr-only" name="handover" value="PICKUP" x-model="handoverType">
+                    <div class="flex items-start gap-3">
+                      <span class="material-symbols-outlined text-emerald-600 text-3xl">delivery_truck_speed</span>
+                      <div>
+                        <div class="font-semibold">Abholung durch Sammelfahrzeug</div>
+                        <div class="text-sm text-gray-600">Nur im Einzugsgebiet (PLZ beginnt mit 10 z.B. 10117)</div>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+                <div class="mt-6 flex justify-end">
+                  <button class="px-5 py-2.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!handoverType" @click="goNext()">Weiter</button>
+                </div>
+              </div>
+            </template>
+
+            <!-- Schritt 2: Adresse (nur bei Abholung) -->
+            <template x-if="step===2">
+              <div>
+                <div class="text-sm font-medium text-gray-900">Abholadresse</div>
+                <div class="mt-3 grid sm:grid-cols-6 gap-4">
+                  <div class="sm:col-span-3">
+                    <label class="block text-sm font-medium text-gray-700">Name <span class="text-rose-600">*</span></label>
+                    <input type="text" x-model.trim="pickup.name" pattern="^[A-Za-zÄÖÜäöüß\-\s]{2,60}$" :class="['gg-input mt-1 w-full focus:border-emerald-500 focus:ring-emerald-500', (pickup.name && !isNameValid(pickup.name)) ? 'ring-1 ring-rose-300 border-rose-300' : '']" :required="handoverType==='PICKUP'" placeholder="Martina Mustermann" autocomplete="name" title="Nur Buchstaben, Leerzeichen und Bindestrich">
+                    <p class="mt-1 text-xs text-rose-600" x-show="pickup.name && !isNameValid(pickup.name)">Ungültige Eingabe</p>
+                  </div>
+                  <div class="sm:col-span-4">
+                    <label class="block text-sm font-medium text-gray-700">Straße & Nr. <span class="text-rose-600">*</span></label>
+                    <input id="pickup-street" type="text" x-model.trim="pickup.street" pattern="^[A-Za-zÄÖÜäöüß0-9\.\-\s]{3,100}$" :class="['gg-input mt-1 w-full focus:border-emerald-500 focus:ring-emerald-500', (pickup.street && !isStreetValid(pickup.street)) ? 'ring-1 ring-rose-300 border-rose-300' : '']" :required="handoverType==='PICKUP'" autocomplete="address-line1" placeholder="Musterstraße 1" title="Straßenname mit Hausnummer, Buchstaben/Ziffern/.- erlaubt">
+                    <p class="mt-1 text-xs text-rose-600" x-show="pickup.street && !isStreetValid(pickup.street)">Ungültige Eingabe</p>
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700">PLZ <span class="text-rose-600">*</span></label>
+                    <input id="pickup-zip" type="text" inputmode="numeric" pattern="\\d{5}" x-model.trim="pickup.zip" @input="validateZip()" :class="['gg-input mt-1 w-full focus:border-emerald-500 focus:ring-emerald-500', (pickup.zip && !zipFormatOk) || (zipFormatOk && pickup.zip.length>=zipPrefixLength && !zipOk) ? 'ring-1 ring-rose-300 border-rose-300' : '']" placeholder="12345" :required="handoverType==='PICKUP'" autocomplete="postal-code" title="5-stellige Postleitzahl">
+                    <p class="mt-1 text-xs text-rose-600" x-show="pickup.zip && !zipFormatOk">Ungültige Eingabe</p>
+                    <p class="mt-1 text-xs text-rose-600" x-show="zipFormatOk && pickup.zip.length>=zipPrefixLength && !zipOk" x-text="'Außerhalb des Einzugsgebietes: PLZ muss mit ' + office.zip.slice(0, zipPrefixLength) + ' starten'"></p>
+                  </div>
+                  <div class="sm:col-span-4">
+                    <label class="block text-sm font-medium text-gray-700">Ort <span class="text-rose-600">*</span></label>
+                    <input id="pickup-city" type="text" x-model.trim="pickup.city" pattern="^[A-Za-zÄÖÜäöüß\-\s]{2,60}$" :class="['gg-input mt-1 w-full focus:border-emerald-500 focus:ring-emerald-500', (pickup.city && !isCityValid(pickup.city)) ? 'ring-1 ring-rose-300 border-rose-300' : '']" :required="handoverType==='PICKUP'" autocomplete="address-level2" placeholder="Berlin" title="Nur Buchstaben, Leerzeichen und Bindestrich">
+                    <p class="mt-1 text-xs text-rose-600" x-show="pickup.city && !isCityValid(pickup.city)">Ungültige Eingabe</p>
+                  </div>
+                  <div class="sm:col-span-6">
+                    <label class="block text-sm font-medium text-gray-700">E-Mail <span class="text-rose-600">*</span></label>
+                    <input type="email" x-model.trim="pickup.email" :class="['gg-input mt-1 w-full focus:border-emerald-500 focus:ring-emerald-500', (pickup.email && !validEmail(pickup.email)) ? 'ring-1 ring-rose-300 border-rose-300' : '']" :required="handoverType==='PICKUP'" autocomplete="email" placeholder="name@example.org">
+                    <p class="mt-1 text-xs text-rose-600" x-show="pickup.email && !validEmail(pickup.email)">Ungültige Eingabe</p>
+                  </div>
+                </div>
+                <div class="mt-6 flex items-center justify-between">
+                  <button class="px-4 py-2 rounded-lg border hover:bg-gray-50" @click="goPrev()">Zurück</button>
+                  <button class="px-5 py-2.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="handoverType==='PICKUP' && (!zipFormatOk || !zipOk || !isNameValid(pickup.name) || !isStreetValid(pickup.street) || !isCityValid(pickup.city) || !validEmail(pickup.email))" @click="goNext()">Weiter</button>
+                </div>
+              </div>
+            </template>
+
+            <!-- Schritt 3: Art der Kleidung -->
+            <template x-if="step===3">
+              <div>
+                <div class="text-sm font-medium text-gray-900">Art der Kleidung <span class="text-rose-600">*</span></div>
+                <div class="mt-3 grid sm:grid-cols-3 gap-2">
+                  <template x-for="opt in itemOptions" :key="opt">
+                    <label class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer hover:bg-gray-50" :class="selectedItems.includes(opt) ? 'border-emerald-500 bg-emerald-50' : 'border-gray-300'">
+                      <input type="checkbox" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500" :value="opt" @change="toggleItem(opt)">
+                      <span class="text-sm" x-text="opt"></span>
+                    </label>
+                  </template>
+                </div>
+                <div class="mt-3">
+                  <label class="block text-sm font-medium text-gray-700">Sonstiges</label>
+                  <input type="text" x-model.trim="otherItems" pattern="^[A-Za-zÄÖÜäöüß0-9\s]{0,120}$" maxlength="120" placeholder="z. B. Decken 2x, Mützen" :class="['gg-input mt-1 w-full focus:border-emerald-500 focus:ring-emerald-500', (otherItems && !isOtherValid(otherItems)) ? 'ring-1 ring-rose-300 border-rose-300' : '']" title="Nur Buchstaben, Zahlen und Leerzeichen">
+                  <p class="mt-1 text-xs text-rose-600" x-show="otherItems && !isOtherValid(otherItems)">Ungültige Eingabe</p>
+                </div>
+                <div class="mt-6 flex items-center justify-between">
+                  <button class="px-4 py-2 rounded-lg border hover:bg-gray-50" @click="goPrev()">Zurück</button>
+                  <button class="px-5 py-2.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="(selectedItems.length===0 && otherItems.trim().length===0) || (otherItems.trim().length>0 && !isOtherValid(otherItems))" @click="goNext()">Weiter</button>
+                </div>
+              </div>
+            </template>
+
+            <!-- Schritt 4: Krisengebiet -->
+            <template x-if="step===4">
+              <div>
+                <div class="text-sm font-medium text-gray-900">Krisengebiet <span class="text-rose-600">*</span></div>
+                <div class="relative mt-3">
+                  <select x-model="crisisRegion" class="gg-input w-full pr-10 appearance-none focus:border-emerald-500 focus:ring-emerald-500">
+                    <option value="" disabled>Bitte auswählen …</option>
+                    <template x-for="r in crisisRegions" :key="r.id">
+                      <option :value="r.id" x-text="r.name"></option>
+                    </template>
+                  </select>
+                  <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">expand_more</span>
+                </div>
+                <div class="mt-6 flex items-center justify-between">
+                  <button class="px-4 py-2 rounded-lg border hover:bg-gray-50" @click="goPrev()">Zurück</button>
+                  <button class="px-5 py-2.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!crisisRegion" @click="goNext()">Weiter</button>
+                </div>
+              </div>
+            </template>
+
+            <!-- Schritt 5: Kontakt (optional) -->
+            <template x-if="step===5">
+              <div>
+                <div class="text-sm font-medium text-gray-900">Kontakt (optional)</div>
+                <div class="mt-3 grid sm:grid-cols-3 gap-3">
+                  <div class="sm:col-span-1" x-show="handoverType!=='PICKUP'">
+                    <label class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" x-model.trim="contact.name" pattern="^[A-Za-zÄÖÜäöüß\-\s]{2,60}$" :class="['gg-input mt-1 w-full focus:border-emerald-500 focus:ring-emerald-500', (contact.name && !isNameValid(contact.name)) ? 'ring-1 ring-rose-300 border-rose-300' : '']" placeholder="Martina Mustermann" title="Nur Buchstaben, Leerzeichen und Bindestrich">
+                    <p class="mt-1 text-xs text-rose-600" x-show="contact.name && !isNameValid(contact.name)">Ungültige Eingabe</p>
+                  </div>
+                  <div class="sm:col-span-1" x-show="handoverType!=='PICKUP'">
+                    <label class="block text-sm font-medium text-gray-700">E‑Mail</label>
+                    <input type="email" x-model.trim="contact.email" :class="['gg-input mt-1 w-full focus:border-emerald-500 focus:ring-emerald-500', (contact.email && !validEmail(contact.email)) ? 'ring-1 ring-rose-300 border-rose-300' : '']" placeholder="name@example.org" autocomplete="email">
+                    <p class="mt-1 text-xs text-rose-600" x-show="contact.email && !validEmail(contact.email)">Ungültige Eingabe</p>
+                  </div>
+                  <div class="sm:col-span-1" x-show="handoverType==='PICKUP'">
+                    <label class="block text-sm font-medium text-gray-700">Telefon</label>
+                    <input type="tel" x-model.trim="contact.phone" pattern="^\+?[0-9]{6,16}$" :class="['gg-input mt-1 w-full focus:border-emerald-500 focus:ring-emerald-500', (contact.phone && !/^\+?[0-9]{6,16}$/.test(contact.phone)) ? 'ring-1 ring-rose-300 border-rose-300' : '']" placeholder="+491234567890" autocomplete="tel">
+                    <p class="mt-1 text-xs text-rose-600" x-show="contact.phone && !/^\+?[0-9]{6,16}$/.test(contact.phone)">Ungültige Eingabe</p>
+                  </div>
+                </div>
+                <div class="mt-6 flex items-center justify-between">
+                  <button class="px-4 py-2 rounded-lg border hover:bg-gray-50" @click="goPrev()">Zurück</button>
+                  <button class="px-5 py-2.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="(contact.name.trim().length>0 && !isNameValid(contact.name)) || (contact.email.trim().length>0 && !validEmail(contact.email)) || (contact.phone.trim().length>0 && !/^\+?[0-9]{6,16}$/.test(contact.phone))" @click="goNext()">Weiter</button>
+                </div>
+              </div>
+            </template>
+
+            <!-- Schritt 6: Übersicht & Bestätigung -->
+            <template x-if="step===6">
+              <div>
+                <div class="text-sm font-medium text-gray-900">Zusammenfassung</div>
+                <dl class="mt-4 grid sm:grid-cols-2 gap-4">
+                  <div class="p-4 border rounded-xl"><dt class="text-sm text-gray-500">Übergabe</dt><dd class="font-medium" x-text="handoverType==='OFFICE' ? 'Geschäftsstelle' : 'Abholung'"></dd></div>
+                  <div class="p-4 border rounded-xl" x-show="handoverType==='PICKUP'"><dt class="text-sm text-gray-500">Abholadresse</dt><dd class="font-medium" x-text="pickup.street + ', ' + pickup.zip + ' ' + pickup.city"></dd></div>
+                  <div class="p-4 border rounded-xl"><dt class="text-sm text-gray-500">Kleidung</dt><dd class="font-medium" x-text="([...selectedItems, otherItems].filter(Boolean)).join(', ')"></dd></div>
+                  <div class="p-4 border rounded-xl"><dt class="text-sm text-gray-500">Krisengebiet</dt><dd class="font-medium" x-text="crisisRegions.find(r=>r.id===crisisRegion)?.name || ''"></dd></div>
+                  <div class="p-4 border rounded-xl" x-show="contact.name || contact.email || contact.phone"><dt class="text-sm text-gray-500">Kontakt</dt><dd class="font-medium" x-text="[contact.name, contact.email, contact.phone].filter(Boolean).join(' · ')"></dd></div>
+                </dl>
+                <div class="mt-6 flex items-center justify-between">
+                  <button class="px-4 py-2 rounded-lg border hover:bg-gray-50" @click="goPrev()">Zurück</button>
+                  <button class="px-5 py-2.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700" @click="finalize()">Bestätigen</button>
+                </div>
+              </div>
+            </template>
+
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+  </div>
+
+  <!-- Alpine-Component -->
+  <script>
+    function donationApp() {
+      return {
+        // Setup
+        step: 1,
+        // Config – Geschäftsstelle & Einzugsgebiet anpassen
+        office: { name: 'Geschäftsstelle', street: 'Musterstraße 1', zip: '10117', city: 'Berlin' },
+        zipPrefixLength: 2,
+        crisisRegions: [
+          { id: 'ukraine', name: 'Ukraine' },
+          { id: 'gaza', name: 'Gaza' },
+          { id: 'syrien', name: 'Syrien' },
+          { id: 'afghanistan', name: 'Afghanistan' },
+          { id: 'sudan', name: 'Sudan' },
+        ],
+        itemOptions: ['Jacken', 'Hosen', 'Pullover', 'Kinderkleidung', 'Schuhe', 'Sportkleidung'],
+
+        // State
+        handoverType: 'OFFICE',
+        pickup: { street: '', zip: '', city: '', email: '' },
+        selectedItems: [],
+        otherItems: '',
+        crisisRegion: '',
+        contact: { name: '', email: '', phone: '' },
+        zipOk: false,
+        errorMessage: '',
+
+        // Computed
+        get canSubmit() {
+          const hasItems = this.selectedItems.length > 0 || this.otherItems.trim().length > 0;
+          const hasRegion = !!this.crisisRegion;
+          if (this.handoverType === 'OFFICE') return hasItems && hasRegion;
+          // PICKUP: benötigt Adresse + PLZ-Prüfung
+          const addrOk = this.pickup.street && /^\d{5}$/.test(this.pickup.zip) && this.pickup.city;
+          return hasItems && hasRegion && addrOk && this.zipOk;
+        },
+
+        // Methoden
+        isNameValid(v) { return /^[A-Za-zÄÖÜäöüß\-\s]{2,60}$/.test(v || ''); },
+        isStreetValid(v) { return /^[A-Za-zÄÖÜäöüß0-9\.\-\s]{3,100}$/.test(v || ''); },
+        isCityValid(v) { return /^[A-Za-zÄÖÜäöüß\-\s]{2,60}$/.test(v || ''); },
+        isOtherValid(v) { return /^[A-Za-zÄÖÜäöüß0-9\s]{1,120}$/.test(v || ''); },
+        validEmail(v) { return /^(?:[A-Za-z0-9_'^&\+\-])+(?:\.(?:[A-Za-z0-9_'^&\+\-])+)*@(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}$/.test((v||'').trim()); },
+        toggleItem(opt) {
+          const i = this.selectedItems.indexOf(opt);
+          if (i >= 0) this.selectedItems.splice(i, 1); else this.selectedItems.push(opt);
+        },
+        goNext() {
+          // Wenn Abholung nicht gewählt, Adress-Schritt überspringen
+          if (this.step === 1 && this.handoverType === 'OFFICE') { this.step = 3; return; }
+          if (this.step === 2 && this.handoverType === 'OFFICE') { this.step = 3; return; }
+          if (this.step < 6) this.step += 1;
+        },
+        goPrev() {
+          if (this.step === 3 && this.handoverType === 'OFFICE') { this.step = 1; return; }
+          if (this.step > 1) this.step -= 1;
+        },
+        finalize() {
+          // Bestätigungsdaten erstellen
+          const items = [...this.selectedItems];
+          if (this.otherItems.trim()) items.push(this.otherItems.trim());
+          const crisis = this.crisisRegions.find(r => r.id === this.crisisRegion)?.name || '';
+          const when = new Date().toLocaleString('de-DE', { dateStyle: 'medium', timeStyle: 'short' });
+          const place = this.handoverType === 'OFFICE'
+            ? `${this.office.name}, ${this.office.street}, ${this.office.zip} ${this.office.city}`
+            : `${this.pickup.street}, ${this.pickup.zip} ${this.pickup.city}`;
+
+          // 6-stelliger Code (A–Z ohne I,O, 2–9)
+          const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+          let code = '';
+          for (let i = 0; i < 6; i++) code += alphabet[Math.floor(Math.random() * alphabet.length)];
+
+          const confirmationData = {
+            id: code,
+            when,
+            place,
+            itemsLabel: items.join(', '),
+            crisisLabel: crisis,
+            handoverType: this.handoverType,
+          };
+
+          // Bestätigungsdaten im sessionStorage speichern und weiterleiten
+          sessionStorage.setItem('donationConfirmation', JSON.stringify(confirmationData));
+          window.location.href = '/bestaetigung.html';
+        },
+        validateZip() {
+          const need = this.office.zip.slice(0, this.zipPrefixLength);
+          const have = (this.pickup.zip || '').slice(0, this.zipPrefixLength);
+          this.zipOk = have.length === this.zipPrefixLength && have === need;
+          this.zipFormatOk = /^\d{5}$/.test(this.pickup.zip || '');
+        },
+        zipFormatOk: false,
+        resetForm() {
+          this.handoverType = 'OFFICE';
+          this.pickup = { street: '', zip: '', city: '', email: '' };
+          this.selectedItems = [];
+          this.otherItems = '';
+          this.crisisRegion = '';
+          this.contact = { name: '', email: '', phone: '' };
+          this.zipOk = false;
+          this.errorMessage = '';
+        },
+      };
+    }
+
+
+    // Ladeanzeige kurz nach DOM-Bereitschaft ausblenden
+    document.addEventListener('DOMContentLoaded', function(){
+      setTimeout(function(){
+        var loader = document.getElementById('page-loader');
+        if (loader) loader.classList.add('hidden');
+      }, 450);
+    });
+  </script>
+</body>
+</html>

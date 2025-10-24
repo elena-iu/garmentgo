@@ -1,0 +1,55 @@
+<!-- Cookie-Banner -->
+<div id="cookie-banner" class="fixed bottom-0 inset-x-0 z-50 hidden">
+  <div class="max-w-6xl mx-auto px-4 pb-4">
+    <div class="mb-2 rounded-2xl bg-white shadow-lg ring-1 ring-gray-200 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div class="text-sm text-gray-700">
+        Wir verwenden technisch notwendige Cookies für den sicheren Betrieb dieser Website. Details findest du in unserer
+        <a href="/rechtliches/datenschutz.html" class="underline hover:text-gray-900">Datenschutzerklärung</a>.
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" id="cookie-accept" class="inline-flex items-center px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400">Einverstanden</button>
+        <button type="button" id="cookie-decline" class="hidden inline-flex items-center px-4 py-2 rounded-lg border text-sm text-gray-700 hover:bg-gray-50">Ablehnen</button>
+      </div>
+    </div>
+  </div>
+  <div class="h-3 bg-gradient-to-t from-white/90 to-transparent"></div>
+  <style>
+    /* Sicheren Bereich auf Mobile reservieren, wenn Banner angezeigt wird */
+    body.cookie-banner-visible { padding-bottom: 88px; }
+    @media (min-width: 640px) { body.cookie-banner-visible { padding-bottom: 0; } }
+  </style>
+</div>
+<script>
+  (function(){
+    try {
+      var storage = window.localStorage;
+      var key = 'gg_cookie_consent_v1';
+      var banner = document.getElementById('cookie-banner');
+      var acceptBtn = document.getElementById('cookie-accept');
+      var declineBtn = document.getElementById('cookie-decline');
+      if (!banner) return;
+
+      var state = storage.getItem(key);
+      if (!state) {
+        banner.classList.remove('hidden');
+        document.body.classList.add('cookie-banner-visible');
+      }
+
+      function hide() {
+        banner.classList.add('hidden');
+        document.body.classList.remove('cookie-banner-visible');
+      }
+
+      if (acceptBtn) acceptBtn.addEventListener('click', function(){
+        storage.setItem(key, 'accepted');
+        hide();
+      });
+      if (declineBtn) declineBtn.addEventListener('click', function(){
+        storage.setItem(key, 'declined');
+        hide();
+      });
+    } catch (e) { /* keine Aktion, wenn Speicher nicht verfügbar */ }
+  })();
+</script>
+
+

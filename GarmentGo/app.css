@@ -1,0 +1,12 @@
+@media print { .no-print { display: none !important; } }
+
+/* Gemeinsame Eingabe-Stile */
+.gg-input {
+  height: 2.75rem;
+  border: 1px solid #e5e7eb; /* grau-200 */
+  border-radius: .5rem;      /* abgerundet-lg */
+  padding: .5rem .75rem;     /* py-2 px-3 */
+  background: #fff;
+}
+
+
