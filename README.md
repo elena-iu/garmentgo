@@ -1,3 +1,6 @@
+**Hinweis:** Dieses Repository ist ein fiktives Projekt, erstellt im Rahmen einer universitären Fallstudie. Es dient ausschließlich Demonstrations- und Übungszwecken und steht in keinem realen Bezug zu tatsächlichen Organisationen oder Einsätzen.
+_________________________________________________
+
 # GarmentGo - Zielgenau helfen
 
 Eine moderne, responsive Website für die Kleiderspende-Plattform GarmentGo e.V., die es Spender:innen ermöglicht, gezielt in Krisengebiete zu spenden.
@@ -6,7 +9,6 @@ Eine moderne, responsive Website für die Kleiderspende-Plattform GarmentGo e.V.
 
 GarmentGo e.V. ist eine gemeinnützige Organisation, die 2020 aus einer lokalen Initiative entstanden ist. Das Ziel: gut erhaltene Kleidung dorthin bringen, wo sie am dringendsten gebraucht wird – ohne Umwege. Die Website ermöglicht es Spender:innen, ihr Zielgebiet selbst zu wählen und zwischen Übergabe an der Geschäftsstelle oder Abholung per Sammelfahrzeug zu entscheiden.
 
-**Hinweis:** Dieses Repository ist ein fiktives Projekt, erstellt im Rahmen einer universitären Fallstudie. Es dient ausschließlich Demonstrations- und Übungszwecken und steht in keinem realen Bezug zu tatsächlichen Organisationen oder Einsätzen.
 
 ## ✨ Features
 
